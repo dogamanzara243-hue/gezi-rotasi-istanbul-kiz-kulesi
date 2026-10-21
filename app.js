@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     if (typeof SPOT_DATA === "undefined") {
-        console.error("Hata: SPOT_DATA objesi yüklenemedi.");
+        console.error("Hata: SPOT_DATA bulunamadı. Lütfen data.js dosyasını kontrol edin.");
         return;
     }
-
     renderTheme();
     renderNavigation();
     renderHero();
@@ -19,22 +18,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function renderTheme() {
     const validThemes = ["nature", "history", "sea", "museum"];
-    const theme = validThemes.includes(SPOT_DATA.theme) ? SPOT_DATA.theme : "sea";
+    const theme = validThemes.includes(SPOT_DATA.theme) ? SPOT_DATA.theme : "museum";
     document.body.classList.add(`theme-${theme}`);
 }
 
 function renderNavigation() {
-    document.title = `${SPOT_DATA.title} | Gezi Rotası`;
+    document.title = `${SPOT_DATA.title} | Gezi Rehberi`;
     document.getElementById("breadcrumb-title").textContent = SPOT_DATA.title;
 }
 
 function renderHero() {
     document.getElementById("hero-bg").src = SPOT_DATA.hero.coverImage;
     document.getElementById("hero-bg").alt = SPOT_DATA.title;
-
     document.querySelector("#badge-category span").textContent = SPOT_DATA.category;
     document.querySelector("#badge-honor span").textContent = SPOT_DATA.hero.badge;
-
     document.getElementById("hero-title").textContent = SPOT_DATA.title;
     document.getElementById("hero-subtitle").textContent = SPOT_DATA.subtitle;
 
@@ -42,7 +39,7 @@ function renderHero() {
     statsContainer.innerHTML = SPOT_DATA.hero.stats.map(stat => `
         <div class="border-r border-white/10 last:border-0 pr-2">
             <span class="block text-xs text-slate-400 uppercase tracking-wider">${stat.label}</span>
-            <span class="text-sm sm:text-base font-semibold text-amber-300 truncate block">${stat.value}</span>
+            <span class="text-sm sm:text-base md:text-lg font-semibold text-amber-400 truncate block">${stat.value}</span>
         </div>
     `).join("");
 }
@@ -54,22 +51,21 @@ function renderVenueSummary() {
 
     const detailsContainer = document.getElementById("summary-details");
     detailsContainer.innerHTML = SPOT_DATA.venueSummary.details.map(item => `
-        <div class="bg-white/10 px-3 py-1.5 rounded-xl border border-white/10 backdrop-blur-xs">
-            <span class="text-slate-300">${item.label}:</span> ${item.value}
+        <div class="bg-white/10 px-3 py-1.5 rounded-lg">
+            <span class="text-slate-400">${item.label}:</span> ${item.value}
         </div>
     `).join("");
 }
 
 function renderOverview() {
     document.querySelector("#overview-title span:last-child").textContent = SPOT_DATA.overview.title;
-
     const paragraphsContainer = document.getElementById("overview-paragraphs");
     paragraphsContainer.innerHTML = SPOT_DATA.overview.paragraphs.map(p => `<p>${p}</p>`).join("");
 
     const notesContainer = document.getElementById("visitor-notes-list");
     notesContainer.innerHTML = SPOT_DATA.overview.visitorNotes.map((note, idx, arr) => `
-        <li class="flex justify-between pb-2.5 ${idx !== arr.length - 1 ? 'border-b border-slate-100' : ''}">
-            <span class="text-slate-500">${note.label}:</span>
+        <li class="flex justify-between pb-2 ${idx !== arr.length - 1 ? 'border-b border-slate-100' : ''}">
+            <span>${note.label}:</span>
             <span class="font-semibold text-slate-800">${note.value}</span>
         </li>
     `).join("");
@@ -81,7 +77,7 @@ function renderWhyVisit() {
 
     const cardsContainer = document.getElementById("why-visit-cards");
     cardsContainer.innerHTML = SPOT_DATA.whyVisit.cards.map(card => `
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all group">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow group">
             <div class="w-12 h-12 rounded-xl bg-theme-light text-theme flex items-center justify-center text-xl mb-4 group-hover:bg-theme group-hover:text-white transition-colors">
                 <i class="${card.icon}"></i>
             </div>
@@ -93,7 +89,6 @@ function renderWhyVisit() {
 
 function renderMustSee() {
     document.querySelector("#must-see-title span").textContent = SPOT_DATA.mustSee.title;
-
     const itemsContainer = document.getElementById("must-see-items");
     itemsContainer.innerHTML = SPOT_DATA.mustSee.items.map(item => `
         <div class="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs">
@@ -106,7 +101,6 @@ function renderMustSee() {
 
 function renderTransportation() {
     document.querySelector("#transport-title span").textContent = SPOT_DATA.transportation.title;
-
     const methodsContainer = document.getElementById("transport-methods");
     methodsContainer.innerHTML = SPOT_DATA.transportation.methods.map(method => `
         <div class="flex items-start space-x-3">
@@ -125,16 +119,15 @@ function renderTransportation() {
 
 function renderWhereToStay() {
     document.querySelector("#where-to-stay-title span").textContent = SPOT_DATA.whereToStay.title;
-
     const hotelContainer = document.getElementById("hotel-list");
     hotelContainer.innerHTML = SPOT_DATA.whereToStay.hotels.map(hotel => `
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-[10px] font-bold text-theme bg-theme-light px-2 py-0.5 rounded-md">${hotel.badge}</span>
                 <h4 class="font-bold text-slate-900 text-base">${hotel.name}</h4>
                 <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot mr-1"></i> ${hotel.distance}</p>
             </div>
-            <a href="${hotel.link}" class="px-4 py-2 bg-theme-light hover:bg-theme hover:text-white text-theme rounded-xl text-xs font-semibold transition-colors">
+            <a href="${hotel.link}" target="_blank" rel="noopener" class="px-4 py-2 bg-theme-light hover:bg-theme hover:text-white text-theme rounded-xl text-xs font-semibold transition-colors">
                 Otele Bak
             </a>
         </div>
@@ -143,10 +136,9 @@ function renderWhereToStay() {
 
 function renderWhereToEat() {
     document.querySelector("#where-to-eat-title span").textContent = SPOT_DATA.whereToEat.title;
-
     const restaurantContainer = document.getElementById("restaurant-list");
     restaurantContainer.innerHTML = SPOT_DATA.whereToEat.restaurants.map(rest => `
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md">${rest.badge}</span>
                 <h4 class="font-bold text-slate-900 text-base">${rest.name}</h4>
@@ -160,11 +152,10 @@ function renderWhereToEat() {
 }
 
 function setupEventListeners() {
-    document.getElementById("btn-favorite")?.addEventListener("click", () => {
+    document.getElementById("btn-favorite").addEventListener("click", () => {
         alert(`${SPOT_DATA.title} favorilere eklendi!`);
     });
-
-    document.getElementById("btn-share")?.addEventListener("click", () => {
+    document.getElementById("btn-share").addEventListener("click", () => {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(window.location.href);
             alert("Bağlantı panoya kopyalandı!");
